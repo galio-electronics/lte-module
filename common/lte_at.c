@@ -1,5 +1,8 @@
 #include "lte_at.h"
 #include <string.h>
+#ifndef LTE_AT_LINE_HOOK
+#define LTE_AT_LINE_HOOK(line)
+#endif
 static void lte_at_send(char *text)
 {
    while(*text) LTE_PUTC(*text++);
@@ -35,6 +38,7 @@ static void lte_at_poll(void)
       if(c=='\n')
       {
          lte_at_line[lte_at_used]=0;
+         LTE_AT_LINE_HOOK(lte_at_line);
          if(strstr(lte_at_line,"+CMQTTCONNLOST:") ||
             strstr(lte_at_line,"+CIPEVENT: NETWORK CLOSED") ||
             !strcmp(lte_at_line,"RDY")) lte_at_link_lost=TRUE;

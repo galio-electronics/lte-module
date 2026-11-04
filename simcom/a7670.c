@@ -99,9 +99,12 @@ void a7670_task(void)
          sprintf(a7670_command,"AT+CMQTTACCQ=0,\"%s\",0",LTE_MQTT_CLIENT_ID);
          lte_at_command(a7670_command,"",3000); break;
       case 14:
-         if(strlen(LTE_MQTT_USER))
+         if(strlen(LTE_MQTT_USER) && strlen(LTE_MQTT_PASSWORD))
             sprintf(a7670_command,"AT+CMQTTCONNECT=0,\"tcp://%s:%LU\",60,1,\"%s\",\"%s\"",
                LTE_MQTT_HOST,(unsigned int32)LTE_MQTT_PORT,LTE_MQTT_USER,LTE_MQTT_PASSWORD);
+         else if(strlen(LTE_MQTT_USER))
+            sprintf(a7670_command,"AT+CMQTTCONNECT=0,\"tcp://%s:%LU\",60,1,\"%s\"",
+               LTE_MQTT_HOST,(unsigned int32)LTE_MQTT_PORT,LTE_MQTT_USER);
          else
             sprintf(a7670_command,"AT+CMQTTCONNECT=0,\"tcp://%s:%LU\",60,1",
                LTE_MQTT_HOST,(unsigned int32)LTE_MQTT_PORT);

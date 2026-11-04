@@ -1,7 +1,7 @@
 # LTE modules para CCS C
 
 Driver inicial SIMCom A7670/A76XX por AT, probado a nivel de compilacion con
-CCS PCH 5.081. Pendiente validacion fisica con SIM, operador y broker.
+CCS PCH 5.081. Validado en Protolink Station con SIM y broker MQTT el 3 de noviembre de 2026.
 
 - `common/lte_at.h`, `common/lte_at.c`: parser incremental, prompt, respuestas
   OK/ERROR, evento asincrono esperado, timeout y deteccion de desbordamiento.
@@ -75,3 +75,17 @@ que el contador published solo crece con confirmacion y no se altera el sensor.
 
 Referencia primaria: [SIMCom A76XX AT Manual V1.09, seccion MQTT](https://files.waveshare.com/wiki/A7670E-Cat-1-GNSS-HAT/A76XX_Series_AT_Command_Manual_V1.09.pdf).
 Secuencia KEY/DTR: [SIMCom A7670 Hardware Design V1.03](https://cdn.tdlogy.com/public/Datasheet/4G-5G/A7670%20Series_Hardware%20Design_V1.03.pdf).
+
+## Prueba en placa 2026-11-03
+
+A7670 UART5 con QDY30A UART4: SIM/registro/servicio MQTT y conexion exitosos.
+14 publicaciones QoS 1 consecutivas confirmadas por +CMQTTPUB: 0,0, cada 5 s.
+Se omite password en CMQTTCONNECT cuando esta vacio, conservando el usuario;
+el argumento vacio explicito producia ERROR en el modem probado.
+Compilacion: 0 errores, 0 advertencias, ROM 14%, RAM 46-56%.
+La validacion llega a la confirmacion MQTT del modem, no al dashboard remoto.
+Los escenarios de falla enumerados arriba siguen pendientes.
+
+El hook opcional LTE_AT_LINE_HOOK(line) recibe cada linea completa para
+instrumentacion; no debe bloquear ni emitir comandos. Filtrar antes de registrar
+para no exponer comandos eco, credenciales o mensajes de aplicaciones.
